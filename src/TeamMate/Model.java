@@ -1,9 +1,8 @@
 package TeamMate;
 
-import javax.xml.namespace.QName;
 
 public class Model {
-    public static class participant{
+    public static class Participant{
         private String id;
         private String name;
         private String email;
@@ -15,7 +14,7 @@ public class Model {
 
         @Override
         public String toString() {
-            return "participant [id=" + id + ", name=" + name + ", email=" + email + ", game=" + game + ", skillLevel=" + skillLevel + ", role=" + role + ", score=" + score + "]";
+            return "participant [id=" + id + ", name=" + name + ", email=" + email + ", game=" + game + ", skillLevel=" + skillLevel + ", role=" + role + ", PersonalityScore=" + score + ", PersonalityType=" + type + "]";
         }
 
         public String getId() {
@@ -73,7 +72,7 @@ public class Model {
         Attacker,
         Defender,
         Supporter,
-        Coordinator,
+        Coordinator
     }
 
     public enum PersonalityType{

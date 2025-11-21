@@ -10,7 +10,7 @@ import TeamMate.Model.*;
 
 public class IO {
 
-    public List<participant> openCSV(){
+    public List<Participant> openCSV(){
         JFileChooser fileChooser = new JFileChooser();
         int option  = fileChooser.showOpenDialog(null);
 
@@ -24,8 +24,8 @@ public class IO {
         }
     }
 
-    public List<participant> readCSV(File file) {
-        List<participant> participants;
+    public List<Participant> readCSV(File file) {
+        List<Participant> participants;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line = br.readLine();
             participants = new ArrayList<>();
@@ -40,7 +40,7 @@ public class IO {
                 int score = Integer.parseInt(data[6].trim());
                 PersonalityType type = PersonalityType.valueOf(data[7].trim());
 
-                participant p = new participant();
+                Participant p = new Participant();
                 p.setId(id);
                 p.setName(name);
                 p.setEmail(email);
@@ -57,6 +57,4 @@ public class IO {
         }
         return participants;
     }
-
-
 }
