@@ -34,11 +34,11 @@ public class IO {
                 String id = data[0].trim();
                 String name = data[1].trim();
                 String email = data[2].trim();
-                String game = data[3].trim();
+                String game = data[3].trim().toLowerCase();
                 int skillLevel = Integer.parseInt(data[4].trim());
-                Role role = Role.valueOf(data[5].trim());
+                Role role = Role.valueOf(data[5].trim().toLowerCase());
                 int score = Integer.parseInt(data[6].trim());
-                PersonalityType type = PersonalityType.valueOf(data[7].trim());
+                PersonalityType type = PersonalityType.valueOf(data[7].trim().toLowerCase());
 
                 Participant p = new Participant();
                 p.setId(id);
@@ -56,5 +56,18 @@ public class IO {
             throw new RuntimeException(e);
         }
         return participants;
+    }
+
+    public void writeCSV(List<Team> teams, String filepath) {
+        try (PrintWriter writer = new PrintWriter(filepath)){
+            writer.println("Team_ID,Participant_ID,Name,Email,Game,Skill_Level,Role,Personality_Score,Personality_Type");
+            for (Team team : teams){
+                for (Participant p : team.getMembers()){
+                    writer.println(team.getId()+","+p.getId()+","+p.getName()+","+p.getEmail()+","+p.getGame()+","+p.getSkillLevel()+","+p.getRole()+","+p.getScore()+","+p.getType());
+                }
+            }
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
