@@ -56,6 +56,13 @@ public class TeamBuilder {
     }
 
     public boolean hasRoleDiversity(Team team){
+        long distinctRoles = team.getMembers().stream().map(Participant::getRole).distinct().count();
+        return distinctRoles >=3;
+    }
 
+    public boolean hasGoodPersonalityMix(Team team){
+        long leaders = team.getMembers().stream().filter(p -> p.getType() == PersonalityType.leader).count();
+        long thinkers =  team.getMembers().stream().filter(p -> p.getType() == PersonalityType.thinker).count();
+        return leaders >=1 && thinkers >= 1 && thinkers <=2;
     }
 }
