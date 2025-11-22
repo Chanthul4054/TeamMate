@@ -88,6 +88,10 @@ public class Model {
         public void setId(int id) {
             this.id = id;
         }
+
+        public void addMember(Participant p) {
+            members.add(p);
+        }
     }
 
     public enum Role{
