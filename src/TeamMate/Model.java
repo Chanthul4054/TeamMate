@@ -1,5 +1,7 @@
 package TeamMate;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Model {
     public static class Participant{
@@ -67,18 +69,39 @@ public class Model {
         }
     }
 
+    public static class Team{
+        private int id ;
+        private List<Participant> members = new ArrayList<>();
+
+        public Team(int id) {
+            this.id = id;
+        }
+        public List<Participant> getMembers() {
+            return members;
+        }
+        public void setMembers(List<Participant> members) {
+            this.members = members;
+        }
+        public int getId() {
+            return id;
+        }
+        public void setId(int id) {
+            this.id = id;
+        }
+    }
+
     public enum Role{
-        Strategist,
-        Attacker,
-        Defender,
-        Supporter,
-        Coordinator
+        strategist,
+        attacker,
+        defender,
+        supporter,
+        coordinator
     }
 
     public enum PersonalityType{
-        Leader,
-        Balanced,
-        Thinker
+        leader,
+        balanced,
+        thinker
     }
 
 }
