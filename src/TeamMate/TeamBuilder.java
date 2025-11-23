@@ -1,68 +1,107 @@
 package TeamMate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import TeamMate.Model.*;
 
 public class TeamBuilder {
-    final int TEAM_SIZE = 5;
     final int MAX_GAME_COUNT = 2;
-    public List<Participant> ShuffleParticipants(List<Participant> participants) {
-        Collections.shuffle(participants);
-        participants.sort(Comparator.comparing(Participant::getName).reversed());
-        return participants;
+    public void CreateTeams(List<Participant> participants,List<Team> teams) {
+        List<Participant> leaderList = CreatePersonalityTypeList(participants,PersonalityType.leader);
+        int leaderCount = leaderList.size();
+        for  (int i = 1; i <= leaderCount; i++) {
+            Team team = new Team(i);
+            if (!leaderList.isEmpty()){
+                Participant leader = leaderList.getFirst();
+                team.addMember(leader);
+                leaderList.remove(leader);
+            }
+            teams.add(team);
+        }
     }
+    public void addRestOfTheMembers(List<Participant> participants,List<Team> teams) {
+        List<Participant> thinkerList = CreatePersonalityTypeList(participants,PersonalityType.thinker);
+        List<Participant> balancedList = CreatePersonalityTypeList(participants,PersonalityType.balanced);
+        List<Participant> pool = new ArrayList<>();
+        pool.addAll(thinkerList);
+        pool.addAll(balancedList);
+        pool.sort(Comparator.comparingInt(Participant::getSkillLevel).reversed());
 
-    public List<Team> CreateTeams(List<Participant> participants) {
-        int num = 0;
-        int teamCount = (int) Math.ceil((double) participants.size() /TEAM_SIZE);
-        List<Team> teams = new ArrayList<>();
-        for (int i = 0; i < teamCount; i++) {
-            teams.add(new Team(i + 1));
-        }
-        for  (Participant p : participants) {
-            Team team = teams.get(num % teamCount);
-            team.addMember(p);
-            num++;
-        }
-        return teams;
-    }
-    public boolean canAddToTeam(Team team, Participant p,int teamSize) {
-        int leaderCount = 0;
-        int thinkerCount = 0;
-        int sameGameCount = 0;
-        if (team.getMembers().size() >= teamSize) {
-            return false;
-        }
-        for (Participant p1: team.getMembers()){
-            if (p1.getType() == PersonalityType.leader) {
-                leaderCount++;
-            }else if (p1.getType() == PersonalityType.thinker) {
-                thinkerCount++;
-            }else if (p1.getGame().equalsIgnoreCase(p.getGame())) {
-                sameGameCount++;
+        int totalSkill = teams.stream().mapToInt(this::getTeamTotalSkill).sum() +pool.stream().mapToInt(Participant::getSkillLevel).sum();
+        int teamCount = teams.size();
+        double targetPerTeam = (double) totalSkill / (double) teamCount;
+        for (Participant p : pool) {
+            Team bestTeam = chooseBestTeamFor(p,teams,targetPerTeam);
+            if (bestTeam != null) {
+                bestTeam.addMember(p);
             }
         }
-        if (sameGameCount == MAX_GAME_COUNT) {
-            return false;
-        } else if (leaderCount == 1) {
-            return false;
-        }else if (thinkerCount >= 2) {
-            return false;
+    }
+
+    public List<Participant> CreatePersonalityTypeList(List<Participant> participants,PersonalityType type) {
+        List<Participant> list = new ArrayList<>();
+        for (Participant p : participants) {
+            if (p.getType()== type) {
+                list.add(p);
+            }
         }
-        return true;
+        Collections.shuffle(list);
+        return list;
     }
 
-    public boolean hasRoleDiversity(Team team){
-        long distinctRoles = team.getMembers().stream().map(Participant::getRole).distinct().count();
-        return distinctRoles >=3;
+    private long thinkerCount(Team team) {
+        return team.getMembers().stream().filter(m -> m.getType()==PersonalityType.thinker).count();
     }
 
-    public boolean hasGoodPersonalityMix(Team team){
-        long leaders = team.getMembers().stream().filter(p -> p.getType() == PersonalityType.leader).count();
-        long thinkers =  team.getMembers().stream().filter(p -> p.getType() == PersonalityType.thinker).count();
-        return leaders >=1 && thinkers >= 1 && thinkers <=2;
+    private int getTeamTotalSkill(Team team) {
+        return team.getMembers().stream().mapToInt(Participant::getSkillLevel).sum();
+    }
+
+    private int getSameGameCount(Team team,Participant p) {
+        return Math.toIntExact(team.getMembers().stream().filter(m -> m.getGame().equals(p.getGame())).count());
+    }
+    private long getDistinctRoleCounts(Team team) {
+        return team.getMembers().stream().map(Participant::getRole).distinct().count();
+    }
+    private Team chooseBestTeamFor(Participant p,List<Team> teams,double targetPerTeam) {
+        PersonalityType type = p.getType();
+        String role = p.getRole().toString();
+        Team bestTeam = null;
+        double bestScore = Double.NEGATIVE_INFINITY;
+        for (Team team : teams) {
+            if (getSameGameCount(team,p) >= MAX_GAME_COUNT) {
+                continue;
+            }
+            if(type == PersonalityType.leader) {
+                continue;
+            }
+            long thinkerCount = thinkerCount(team);
+            if(type == PersonalityType.thinker &&  thinkerCount >=2 ){
+                continue;
+            }
+            long teamSkillBefore = getTeamTotalSkill(team);
+            long teamSkillAfter = teamSkillBefore + p.getSkillLevel();
+
+            double score = 0.0;
+
+            if (type == PersonalityType.thinker && thinkerCount == 0){
+                score += 50;
+            }
+            long rolesBefore = getDistinctRoleCounts(team);
+            boolean roleNew = team.getMembers().stream().noneMatch(m -> m.getRole() == p.getRole());
+            if (roleNew) {
+                score += (rolesBefore < 3) ? 30.0 : 10.0;
+            }
+            double diffBefore = Math.abs(teamSkillBefore - targetPerTeam);
+            double diffAfter = Math.abs(teamSkillAfter - targetPerTeam);
+
+            score += diffBefore + diffAfter;
+            if (score>bestScore) {
+                bestScore = score;
+                bestTeam = team;
+            }
+        }
+        return bestTeam;
     }
 }
