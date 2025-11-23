@@ -7,6 +7,7 @@ import TeamMate.Model.*;
 
 public class TeamBuilder {
     final int MAX_GAME_COUNT = 2;
+    final int MAX_TEAM_SIZE = 5;
     public void CreateTeams(List<Participant> participants,List<Team> teams) {
         List<Participant> leaderList = CreatePersonalityTypeList(participants,PersonalityType.leader);
         int leaderCount = leaderList.size();
@@ -70,6 +71,9 @@ public class TeamBuilder {
         Team bestTeam = null;
         double bestScore = Double.NEGATIVE_INFINITY;
         for (Team team : teams) {
+            if (team.getMembers().size() >= MAX_TEAM_SIZE) {
+                continue;
+            }
             if (getSameGameCount(team,p) >= MAX_GAME_COUNT) {
                 continue;
             }

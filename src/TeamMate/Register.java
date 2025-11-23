@@ -4,7 +4,7 @@ import java.util.Scanner;
 import TeamMate.Model.*;
 
 public class Register {
-    public void PersonalityClassifier(Participant p,Scanner sc){
+    public Participant PersonalityClassifier(Participant p,Scanner sc){
         System.out.print("I enjoy taking charge and leading others when working in a team.  -->");
         int Q1 = sc.nextInt();
         System.out.print("I stay calm and think carefully before making decisions. -->");
@@ -29,6 +29,7 @@ public class Register {
             type = PersonalityType.thinker;
         }
         p.setType(type);
+        return p;
     }
 
     public Participant ParticipantInfo(Scanner sc) {

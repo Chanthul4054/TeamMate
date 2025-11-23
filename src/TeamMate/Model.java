@@ -16,7 +16,7 @@ public class Model {
 
         @Override
         public String toString() {
-            return "participant [id=" + id + ", name=" + name + ", email=" + email + ", game=" + game + ", skillLevel=" + skillLevel + ", role=" + role + ", PersonalityScore=" + score + ", PersonalityType=" + type + "]";
+            return "participant [id=" + id + ", name=" + name + ", email=" + email + ", game=" + game + ", skillLevel=" + skillLevel + ", role=" + role + ", PersonalityScore=" + score + ", PersonalityType=" + type + "]\n";
         }
 
         public String getId() {
@@ -91,6 +91,10 @@ public class Model {
 
         public void addMember(Participant p) {
             members.add(p);
+        }
+        @Override
+        public String toString() {
+            return "Team [id=" + id + ", members=" + members + "]\n\n";
         }
     }
 
