@@ -1,6 +1,8 @@
 package TeamMate;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import TeamMate.Model.*;
@@ -8,11 +10,15 @@ import TeamMate.Model.*;
 
 public class Main {
     public static final Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
         int menu = 0;
         IO io = new IO();
         Register reg = new Register();
         TeamBuilder tm = new TeamBuilder();
+        System.out.print("\nStarting System ......");
+        delay(2000);
+        System.out.print("\r           \r");
         System.out.println("            ████████╗███████╗ █████╗ ███╗   ███╗    ███╗   ███╗ █████╗ ████████╗███████╗");
         System.out.println("            ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║    ████╗ ████║██╔══██╗╚══██╔══╝██╔════╝");
         System.out.println("               ██║   █████╗  ███████║██╔████╔██║    ██╔████╔██║███████║   ██║   █████╗  ");
@@ -20,36 +26,52 @@ public class Main {
         System.out.println("               ██║   ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║██║  ██║   ██║   ███████╗");
         System.out.println("               ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝");
         System.out.println("                    INTELLIGENT TEAM FORMATION SYSTEM FOR UNIVERSITY GAMING CLUB");
-        List<Participant> participants = new  ArrayList<>();
-        List<Team> teams = new  ArrayList<>();
+        List<Participant> participants = new ArrayList<>();
+        List<Team> teams = new ArrayList<>();
         do {
             menu = displayMenu(sc);
             switch (menu) {
                 case 1:
                     List<Participant> loaded = io.openCSV();
                     participants.addAll(loaded);
+                    System.out.println("\nParticipants Added\n");
                     break;
                 case 2:
                     Participant NewP = reg.ParticipantInfo(sc);
-                    participants.add(reg.PersonalityClassifier(NewP,sc));
+                    participants.add(reg.PersonalityClassifier(NewP, sc));
                     break;
                 case 3:
-                    System.out.println(participants);
+                    if(!participants.isEmpty()) {
+                        System.out.println(participants);
+                    }else {
+                        System.out.println("\nParticipants are Empty.Please register a participant or load a CSV file\n");
+                    }
                     break;
                 case 4:
-                    tm.CreateTeams(participants, teams);
-                    tm.addRestOfTheMembers(participants, teams);
+                    if(!participants.isEmpty()) {
+                        tm.CreateTeams(participants, teams);
+                        tm.addRestOfTheMembers(participants, teams);
+                        System.out.println("Creating Teams\n");
+                        delay(2000);
+                        System.out.println("Teams Successfully Created\n");
+                    }else {
+                        System.out.println("\nParticipants are Empty.Please register a participant or load a CSV file\n");
+                    }
                     break;
                 case 5:
-                    System.out.println(teams);
+                    if (!teams.isEmpty()) {
+                        System.out.println(teams);
+                    }else{
+                        System.out.println("Team are Empty.Please form teams");
+                    }
                     break;
                 case 6:
-                    io.writeCSV(teams,"C:/Users/chant/OneDrive/Documents/Viva/formed_teams.csv");
+                    io.writeCSV(teams, "C:/Users/chant/OneDrive/Documents/Viva/formed_teams.csv");
                     break;
                 default:
                     System.out.println("\n Invalid choice. Please choose a number between 1 - 7 \n");
             }
-        }while(menu!=7);
+        } while (menu != 7);
         sc.close();
     }
 
@@ -64,9 +86,29 @@ public class Main {
                 6. Save formed teams to a CSV file.
                 7. Exit\s""");
         System.out.println("-----------------------------------------------------------");
-        System.out.print("Enter your choice: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-        return choice ;
+        int choice;
+        while (true) {
+            System.out.print("Enter your choice: ");
+            if (sc.hasNextInt()) {
+                choice = sc.nextInt();
+                sc.nextLine();
+                if (choice >= 1 && choice <= 7) {
+                    return choice;
+                } else {
+                    System.out.println("\nInvalid choice. Enter a number between 1–7.\n");
+                }
+            } else {
+                System.out.println("\nInvalid input. Please enter a number.\n");
+                sc.next();
+            }
+        }
+    }
+
+    public static void delay(int ms){
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

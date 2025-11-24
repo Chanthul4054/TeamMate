@@ -12,6 +12,7 @@ public class IO {
 
     public List<Participant> openCSV(){
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV Files", "csv"));
         int option  = fileChooser.showOpenDialog(null);
 
         if (option == JFileChooser.APPROVE_OPTION){
@@ -25,10 +26,9 @@ public class IO {
     }
 
     public List<Participant> readCSV(File file) {
-        List<Participant> participants;
+        List<Participant> participants = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line = br.readLine();
-            participants = new ArrayList<>();
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
                 String id = data[0].trim();
@@ -52,11 +52,14 @@ public class IO {
                 participants.add(p);
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "File not found \n"+ e.getMessage());
+        }catch (IOException e){
+            JOptionPane.showMessageDialog(null, "Error reading file \n"+ e.getMessage());
         }
         return participants;
     }
+
 
     public void writeCSV(List<Team> teams, String filepath) {
         try (PrintWriter writer = new PrintWriter(filepath)){
@@ -67,7 +70,7 @@ public class IO {
                 }
             }
         }catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.print(" ERROR: Could not write file: " + filepath);
         }
     }
 }
