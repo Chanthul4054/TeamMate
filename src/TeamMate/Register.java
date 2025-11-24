@@ -39,12 +39,14 @@ public class Register {
         String name = sc.nextLine();
         System.out.print("Enter the email of the participant :");
         String email = sc.nextLine();
-        System.out.print("Enter the preferred game of the participant :");
+        System.out.print("Enter the preferred game of the participant :\n" +
+                "(Valorant,Dota 2,chess,Basketball,FIFA,CS:GO)");
         String game = sc.nextLine().toLowerCase();
         System.out.print("Enter the skill level of the participant(1 - 10) :");
         int skillLevel = sc.nextInt();
         sc.nextLine();
-        System.out.print("Enter the preferred Role of the participant :");
+        System.out.print("Enter the preferred Role of the participant :\n" +
+                "(strategist,attacker,defender,supporter,coordinator)");
         String input = sc.nextLine();
         input = input.toLowerCase();
         Model.Role role = Model.Role.valueOf(input);

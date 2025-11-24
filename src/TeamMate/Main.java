@@ -1,8 +1,6 @@
 package TeamMate;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import TeamMate.Model.*;
@@ -12,7 +10,7 @@ public class Main {
     public static final Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int menu = 0;
+        int menu ;
         IO io = new IO();
         Register reg = new Register();
         TeamBuilder tm = new TeamBuilder();
@@ -51,7 +49,7 @@ public class Main {
                     if(!participants.isEmpty()) {
                         tm.CreateTeams(participants, teams);
                         tm.addRestOfTheMembers(participants, teams);
-                        System.out.println("Creating Teams\n");
+                        System.out.println("\nCreating Teams\n");
                         delay(2000);
                         System.out.println("Teams Successfully Created\n");
                     }else {

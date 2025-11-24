@@ -30,26 +30,44 @@ public class IO {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
+                if(line.trim().isEmpty()) {
+                    System.out.println("[SKIPPED] Empty line");
+                    continue;
+                }
                 String[] data = line.split(",");
-                String id = data[0].trim();
-                String name = data[1].trim();
-                String email = data[2].trim();
-                String game = data[3].trim().toLowerCase();
-                int skillLevel = Integer.parseInt(data[4].trim());
-                Role role = Role.valueOf(data[5].trim().toLowerCase());
-                int score = Integer.parseInt(data[6].trim());
-                PersonalityType type = PersonalityType.valueOf(data[7].trim().toLowerCase());
+                if(data.length < 8) {
+                    System.out.println("[SKIPPED] Missing columns: " + line);
+                    continue;
+                }
+                try {
+                    String id = safe(data[0].trim());
+                    String name = safe(data[1].trim());
+                    String email = safe(data[2].trim());
+                    String game = safe(data[3].trim().toLowerCase());
+                    int skillLevel = Integer.parseInt(safe(data[4].trim()));
+                    Role role = Role.valueOf(safe(data[5].trim()).toLowerCase());
+                    int score = Integer.parseInt(safe(data[6].trim()));
+                    PersonalityType type = PersonalityType.valueOf(safe(data[7].trim()).toLowerCase());
+                    if (id == null || name == null || email == null || game == null) {
+                        System.out.println("[SKIPPED] Missing required field: " + line);
+                        continue;
+                    }
 
-                Participant p = new Participant();
-                p.setId(id);
-                p.setName(name);
-                p.setEmail(email);
-                p.setGame(game);
-                p.setSkillLevel(skillLevel);
-                p.setRole(role);
-                p.setScore(score);
-                p.setType(type);
-                participants.add(p);
+                    Participant p = new Participant();
+                    p.setId(id);
+                    p.setName(name);
+                    p.setEmail(email);
+                    p.setGame(game);
+                    p.setSkillLevel(skillLevel);
+                    p.setRole(role);
+                    p.setScore(score);
+                    p.setType(type);
+                    participants.add(p);
+                }catch (Exception ex){
+                    System.out.println("[SKIPPED] Invalid data: " + line);
+                    System.out.println(ex.getMessage());
+                    continue;
+                }
             }
 
         } catch (FileNotFoundException e) {
@@ -72,5 +90,12 @@ public class IO {
         }catch (FileNotFoundException e) {
             System.out.print(" ERROR: Could not write file: " + filepath);
         }
+    }
+
+    private String safe(String s){
+        if (s == null)return null;
+        s = s.trim();
+        if(s.isEmpty() || s.equalsIgnoreCase("null"))return null;
+        return s;
     }
 }
