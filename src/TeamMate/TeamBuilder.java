@@ -6,7 +6,6 @@ import TeamMate.Model.*;
 
 public class TeamBuilder {
     final int MAX_GAME_COUNT = 2;
-    final int MAX_TEAM_SIZE = 5;
     public void CreateTeams(List<Participant> participants,List<Team> teams) {
         List<Participant> leaderList = CreatePersonalityTypeList(participants,PersonalityType.leader);
         int leaderCount = leaderList.size();
@@ -20,7 +19,7 @@ public class TeamBuilder {
             teams.add(team);
         }
     }
-    public void addRestOfTheMembers(List<Participant> participants,List<Team> teams) {
+    public void addRestOfTheMembers(List<Participant> participants,List<Team> teams,int maxTeamSize) {
         List<Participant> thinkerList = CreatePersonalityTypeList(participants,PersonalityType.thinker);
         List<Participant> balancedList = CreatePersonalityTypeList(participants,PersonalityType.balanced);
         List<Participant> pool = new ArrayList<>();
@@ -32,7 +31,7 @@ public class TeamBuilder {
         int teamCount = teams.size();
         double targetPerTeam = (double) totalSkill / (double) teamCount;
         for (Participant p : pool) {
-            Team bestTeam = chooseBestTeamFor(p,teams,targetPerTeam);
+            Team bestTeam = chooseBestTeamFor(p,teams,targetPerTeam,maxTeamSize);
             if (bestTeam != null) {
                 bestTeam.addMember(p);
             }
@@ -64,13 +63,13 @@ public class TeamBuilder {
     private long getDistinctRoleCounts(Team team) {
         return team.getMembers().stream().map(Participant::getRole).distinct().count();
     }
-    private Team chooseBestTeamFor(Participant p,List<Team> teams,double targetPerTeam) {
+    private Team chooseBestTeamFor(Participant p,List<Team> teams,double targetPerTeam,int maxTeamSize) {
         PersonalityType type = p.getType();
         String role = p.getRole().toString();
         Team bestTeam = null;
         double bestScore = Double.NEGATIVE_INFINITY;
         for (Team team : teams) {
-            if (team.getMembers().size() >= MAX_TEAM_SIZE) {
+            if (team.getMembers().size() >= maxTeamSize) {
                 continue;
             }
             if (getSameGameCount(team,p) >= MAX_GAME_COUNT) {

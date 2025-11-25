@@ -47,8 +47,11 @@ public class Main {
                     break;
                 case 4:
                     if(!participants.isEmpty()) {
+                        System.out.print("Enter team size :");
+                        int teamSize = sc.nextInt();
+                        sc.nextLine();
                         tm.CreateTeams(participants, teams);
-                        tm.addRestOfTheMembers(participants, teams);
+                        tm.addRestOfTheMembers(participants, teams, teamSize);
                         System.out.println("\nCreating Teams\n");
                         delay(2000);
                         System.out.println("Teams Successfully Created\n");
@@ -59,6 +62,7 @@ public class Main {
                 case 5:
                     if (!teams.isEmpty()) {
                         System.out.println(teams);
+                        System.out.println(participants);
                     }else{
                         System.out.println("Team are Empty.Please form teams");
                     }
