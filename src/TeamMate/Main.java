@@ -62,7 +62,6 @@ public class Main {
                 case 5:
                     if (!teams.isEmpty()) {
                         System.out.println(teams);
-                        System.out.println(participants);
                     }else{
                         System.out.println("Team are Empty.Please form teams");
                     }

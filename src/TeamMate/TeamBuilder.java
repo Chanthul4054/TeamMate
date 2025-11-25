@@ -1,6 +1,9 @@
 package TeamMate;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import TeamMate.Model.*;
 
@@ -30,12 +33,36 @@ public class TeamBuilder {
         int totalSkill = teams.stream().mapToInt(this::getTeamTotalSkill).sum() +pool.stream().mapToInt(Participant::getSkillLevel).sum();
         int teamCount = teams.size();
         double targetPerTeam = (double) totalSkill / (double) teamCount;
+        int threads = Math.max(1, Runtime.getRuntime().availableProcessors());
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
+
+        List<Callable<Void>> tasks = new ArrayList<>();
+        List<Participant> noTeam = new ArrayList<>();
+
         for (Participant p : pool) {
-            Team bestTeam = chooseBestTeamFor(p,teams,targetPerTeam,maxTeamSize);
-            if (bestTeam != null) {
-                bestTeam.addMember(p);
-            }
+            tasks.add(() -> {
+                synchronized (teams) {
+                    Team bestTeam = chooseBestTeamFor(p, teams, targetPerTeam, maxTeamSize);
+                    if (bestTeam != null) {
+                        bestTeam.addMember(p);
+                    }else{
+                        noTeam.add(p);
+                    }
+                }
+                return null;
+            });
         }
+
+        try {
+            executor.invokeAll(tasks);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Team building interrupted: " + e.getMessage());
+        } finally {
+            executor.shutdown();
+        }
+        participants.removeAll(pool);
+        System.out.println("Participant that cant be added due to constraints "+noTeam);
     }
 
     public List<Participant> CreatePersonalityTypeList(List<Participant> participants,PersonalityType type) {
