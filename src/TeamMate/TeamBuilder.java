@@ -46,7 +46,10 @@ public class TeamBuilder {
                     if (bestTeam != null) {
                         bestTeam.addMember(p);
                     }else{
-                        noTeam.add(p);
+                        synchronized (noTeam) {
+                            noTeam.add(p);
+                        }
+
                     }
                 }
                 return null;

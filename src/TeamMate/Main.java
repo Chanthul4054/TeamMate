@@ -32,7 +32,6 @@ public class Main {
                 case 1:
                     List<Participant> loaded = io.openCSV();
                     participants.addAll(loaded);
-                    System.out.println("\nParticipants Added\n");
                     break;
                 case 2:
                     Participant NewP = reg.ParticipantInfo(sc);
