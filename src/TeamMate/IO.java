@@ -87,6 +87,7 @@ public class IO {
                     writer.println(team.getId()+","+p.getId()+","+p.getName()+","+p.getEmail()+","+p.getGame()+","+p.getSkillLevel()+","+p.getRole()+","+p.getScore()+","+p.getType());
                 }
             }
+            System.out.println("file Created successfully.");
         }catch (FileNotFoundException e) {
             System.out.print(" ERROR: Could not write file: " + filepath);
         }

@@ -25,6 +25,20 @@ public class TeamBuilder {
     public void addRestOfTheMembers(List<Participant> participants,List<Team> teams,int maxTeamSize) {
         List<Participant> thinkerList = CreatePersonalityTypeList(participants,PersonalityType.thinker);
         List<Participant> balancedList = CreatePersonalityTypeList(participants,PersonalityType.balanced);
+        Collections.shuffle(thinkerList);
+        thinkerList.sort(Comparator.comparingInt(Participant::getSkillLevel));
+        List<Participant> assignedThinkers = new ArrayList<>();
+        for (Team team : teams) {
+            if (thinkerList.isEmpty()) {
+                break;
+            }
+            if (team.getMembers().size() >= maxTeamSize) {
+                continue;
+            }
+            Participant thinker = thinkerList.removeFirst();
+            team.addMember(thinker);
+            assignedThinkers.add(thinker);
+        }
         List<Participant> pool = new ArrayList<>();
         pool.addAll(thinkerList);
         pool.addAll(balancedList);
@@ -65,6 +79,7 @@ public class TeamBuilder {
             executor.shutdown();
         }
         participants.removeAll(pool);
+        participants.removeAll(assignedThinkers);
         System.out.println("Participant that cant be added due to constraints "+noTeam);
     }
 
