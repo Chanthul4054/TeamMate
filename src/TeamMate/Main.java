@@ -30,6 +30,14 @@ public class Main {
             menu = displayMenu(sc);
             switch (menu) {
                 case 1:
+                    System.out.println("Enter Username: ");
+                    String user = sc.next();
+                    System.out.println("Enter Password: ");
+                    String password = sc.next();
+                    if (!user.equals("admin") && !password.equals("admin")) {
+                        System.out.println("Access denied");
+                        break;
+                    }
                     List<Participant> loaded = io.openCSV();
                     participants.addAll(loaded);
                     break;
@@ -66,6 +74,14 @@ public class Main {
                     }
                     break;
                 case 6:
+                    System.out.println("Enter Username: ");
+                    String user1 = sc.next();
+                    System.out.println("Enter Password: ");
+                    String password1 = sc.next();
+                    if (!user1.equals("admin") && !password1.equals("admin")) {
+                        System.out.println("Access denied");
+                        break;
+                    }
                     io.writeCSV(teams, "C:/Users/chant/OneDrive/Documents/Viva/formed_teams.csv");
                     break;
                 default:
