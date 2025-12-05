@@ -9,7 +9,7 @@ import TeamMate.Model.*;
 public class Main {
     public static final Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         int menu ;
         IO io = new IO();
         Register reg = new Register();
@@ -31,16 +31,19 @@ public class Main {
             switch (menu) {
                 case 1:
                     System.out.println("Enter Username: ");
-                    String user = sc.next();
+                    String user = sc.nextLine();
                     System.out.println("Enter Password: ");
-                    String password = sc.next();
-                    if (!user.equals("admin") && !password.equals("admin")) {
+                    String password = sc.nextLine();
+                    if (user.equals("admin") && password.equals("admin")) {
+                        System.out.println("Access granted");
+                        List<Participant> loaded = io.openCSV();
+                        participants.addAll(loaded);
+                        displayMenu(sc);
+                    }else {
                         System.out.println("Access denied");
-                        break;
+                        continue;
                     }
-                    List<Participant> loaded = io.openCSV();
-                    participants.addAll(loaded);
-                    break;
+
                 case 2:
                     Participant NewP = reg.ParticipantInfo(sc);
                     participants.add(reg.PersonalityClassifier(NewP, sc));
@@ -78,11 +81,13 @@ public class Main {
                     String user1 = sc.next();
                     System.out.println("Enter Password: ");
                     String password1 = sc.next();
-                    if (!user1.equals("admin") && !password1.equals("admin")) {
+                    if (user1.equals("admin") && password1.equals("admin")) {
+                        System.out.println("Access granted");
+                        io.writeCSV(teams, "C:/Users/chant/OneDrive/Documents/Viva/formed_teams.csv");
+                    }else {
                         System.out.println("Access denied");
                         break;
                     }
-                    io.writeCSV(teams, "C:/Users/chant/OneDrive/Documents/Viva/formed_teams.csv");
                     break;
                 default:
                     System.out.println("\n Invalid choice. Please choose a number between 1 - 7 \n");

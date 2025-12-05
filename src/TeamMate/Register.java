@@ -1,11 +1,16 @@
 package TeamMate;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import TeamMate.Model.*;
 
 public class Register {
-    public int askQuestion(Scanner sc,String question) {
+    public int askQuestion(Scanner sc, String question) {
         int answer;
         while (true) {
             System.out.print(question + " (1–5) --> ");
@@ -25,29 +30,43 @@ public class Register {
     }
 
 
-    public Participant PersonalityClassifier(Participant p,Scanner sc){
-        int Q1 = askQuestion(sc, "I enjoy taking charge and leading others when working in a team.");
-        int Q2 = askQuestion(sc, "I stay calm and think carefully before making decisions.");
-        int Q3 = askQuestion(sc, "I communicate clearly and help my group stay organised.");
-        int Q4 = askQuestion(sc, "I like solving complex problems and analysing situations deeply.");
-        int Q5 = askQuestion(sc, "I adapt easily when plans change or when unexpected issues appear.");
-        int score = (Q1+Q2+Q3+Q4+Q5)*4;
-        p.setScore(score);
+    public Participant PersonalityClassifier(Participant p, Scanner sc) throws Exception {
+        ExecutorService executor = Executors.newCachedThreadPool();
 
-        PersonalityType type;
-        if (score >= 90){
-            type = PersonalityType.leader;
-        }else if (score >= 70){
-            type = PersonalityType.balanced;
-        }else if (score >= 50){
-            type = PersonalityType.thinker;
-        }else{
-            type = PersonalityType.thinker;
-        }
-        p.setType(type);
-        System.out.println("\n[participant added ]"+p);
-        return p;
+        Future<int[]> answersFuture = executor.submit(() -> {
+            int[] answers = new int[5];
+            answers[0] = askQuestion(sc, "I enjoy taking charge and leading others when working in a team.");
+            answers[1] = askQuestion(sc, "I stay calm and think carefully before making decisions.");
+            answers[2] = askQuestion(sc, "I communicate clearly and help my group stay organised.");
+            answers[3] = askQuestion(sc, "I like solving complex problems and analysing situations deeply.");
+            answers[4] = askQuestion(sc, "I adapt easily when plans change or when unexpected issues appear.");
+            return answers;
+        });
+        Future<Participant> classifyFuture = executor.submit(() -> {
+            int[] a = answersFuture.get();
+            int score = (a[0] + a[1] + a[2] + a[3] + a[4]) * 4;
+            p.setScore(score);
+
+
+            PersonalityType type;
+            if (score >= 90) {
+                type = PersonalityType.leader;
+            } else if (score >= 70) {
+                type = PersonalityType.balanced;
+            } else if (score >= 50) {
+                type = PersonalityType.thinker;
+            } else {
+                type = PersonalityType.thinker;
+            }
+            p.setType(type);
+            System.out.println("\n[participant added ]" + p);
+            return p;
+        });
+        Participant result = classifyFuture.get();
+        executor.shutdown();
+        return result;
     }
+
 
     public Participant ParticipantInfo(Scanner sc) {
         String id;
