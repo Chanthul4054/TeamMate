@@ -34,21 +34,21 @@ It registers participants, evaluates their **skills, roles, and personality trai
 
 ## Project Structure
 
-TeamMate/
+TeamMate/  
 ├── docs/  
-│   └── uml/  
-│       ├── ClassDiagram.jpg  
-│       ├── MainSequenceDiagram.jpg  
-│       ├── openCSVSequenceDiagram.jpg  
-│       ├── ActivityDiagram_formTeams.jpg  
-|       └── ActivityDiagram_PersonalityClassifier.jpg  
+│    └── uml/  
+│        ├── ClassDiagram.jpg  
+│        ├── MainSequenceDiagram.jpg  
+│        ├── openCSVSequenceDiagram.jpg  
+│        ├── ActivityDiagram_formTeams.jpg  
+|        └── ActivityDiagram_PersonalityClassifier.jpg  
 ├── src/TeamMate/ 
-|      ├── Main.java # Application entry point & menu system  
-|      ├── IO.java # CSV import/export handling  
-|      ├── Register.java # Participant registration & personality survey  
-|      ├── TeamBuilder.java # Team formation logic and scoring  
-|      ├── Model.java # Data models (Participant, Team, enums)  
-|      └── .gitignore  
+|        ├── Main.java # Application entry point & menu system  
+|        ├── IO.java # CSV import/export handling  
+|        ├── Register.java # Participant registration & personality survey  
+|        ├── TeamBuilder.java # Team formation logic and scoring  
+|        ├── Model.java # Data models (Participant, Team, enums)  
+|        └── .gitignore  
 └── README.md
 
 ---
