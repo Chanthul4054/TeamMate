@@ -34,14 +34,41 @@ It registers participants, evaluates their **skills, roles, and personality trai
 
 ## Project Structure
 
-src/TeamMate/  
-│  
-├── Main.java # Application entry point & menu system  
-├── IO.java # CSV import/export handling  
-├── Register.java # Participant registration & personality survey  
-├── TeamBuilder.java # Team formation logic and scoring  
-├── Model.java # Data models (Participant, Team, enums)  
-└── .gitignore  
+TeamMate/
+├── docs/  
+│   └── uml/  
+│       ├── ClassDiagram.jpg  
+│       ├── MainSequenceDiagram.jpg  
+│       ├── openCSVSequenceDiagram.jpg  
+│       ├── ActivityDiagram_formTeams.jpg  
+|       └── ActivityDiagram_PersonalityClassifier.jpg  
+├── src/TeamMate/ 
+|      ├── Main.java # Application entry point & menu system  
+|      ├── IO.java # CSV import/export handling  
+|      ├── Register.java # Participant registration & personality survey  
+|      ├── TeamBuilder.java # Team formation logic and scoring  
+|      ├── Model.java # Data models (Participant, Team, enums)  
+|      └── .gitignore  
+└── README.md
+
+---
+
+## UML Diagrams
+
+### Class Diagram
+![Class Diagram](docs/uml/ClassDiagram.jpg)
+
+### Sequence Diagram - openCSV
+![openCSV Sequence](docs/uml/openCSVSequenceDiagram.jpg)
+
+### Sequence Diagram - Main
+![Main Sequence](docs/uml/MainSequenceDiagram.jpg)
+
+### Activity Diagram - Form Teams
+![Form Teams Activity](docs/uml/ActivityDiagram_formTeams.jpg)
+
+### Activity Diagram - Personality Classifier
+![Personality Classifier Activity](docs/uml/ActivityDiagram_PersonalityClassifier.jpg)
 
 ---
 
@@ -177,7 +204,7 @@ Used for:
 4. Provide sample CSV files in /data
 5. Add documentation diagrams
 
-===
+---
 
 ## Author
 
